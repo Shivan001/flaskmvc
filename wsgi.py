@@ -1,69 +1,88 @@
-import click, pytest, sys
+import click
+from datetime import datetime
 from flask import Flask
-from flask.cli import with_appcontext, AppGroup
-
-from App.database import db, get_migrate
-from App.models import User
 from App.main import create_app
-from App.controllers import ( create_user, get_all_users_json, get_all_users, initialize )
-
-
-# This commands file allow you to create convenient CLI commands for testing controllers
+from App.database import db, get_migrate
+from App.controllers.student import create_student, get_all_students
+from App.controllers.admin import create_admin, get_all_admins
+from App.controllers.competition import create_competition, get_all_competitions
+from App.controllers.competition_result import create_competition_result
+from App.controllers.competition_result import import_results_from_file
+from App.controllers.competition_result import get_results_by_competition
+from App.controllers.file import import_file_data
 
 app = create_app()
 migrate = get_migrate(app)
 
-# This command creates and initializes the database
 @app.cli.command("init", help="Creates and initializes the database")
 def init():
-    initialize()
-    print('database intialized')
+    db.create_all()
+    print("database initialized!")
 
-'''
-User Commands
-'''
+#commands student
+@app.cli.command("create-student", help="Creates a student")
+@click.argument("name")
+def create_student_command(name):
+    create_student(name)
+    print(f'Student {name} created!')
 
-# Commands can be organized using groups
+@app.cli.command("list-students", help="Lists all students")
+def list_students_command():
+    students = get_all_students()
+    for student in students:
+        print(student.to_dict())
 
-# create a group, it would be the first argument of the comand
-# eg : flask user <command>
-user_cli = AppGroup('user', help='User object commands') 
+#commands admin
+@app.cli.command("create-admin", help="Creates an admin")
+@click.argument("name")
+def create_admin_command(name):
+    create_admin(name)
+    print(f'Admin {name} created!')
 
-# Then define the command and any parameters and annotate it with the group (@)
-@user_cli.command("create", help="Creates a user")
-@click.argument("username", default="rob")
-@click.argument("password", default="robpass")
-def create_user_command(username, password):
-    create_user(username, password)
-    print(f'{username} created!')
+@app.cli.command("list-admins", help="Lists all admins")
+def list_admins_command():
+    admins = get_all_admins()
+    for admin in admins:
+        print(admin.to_dict())
 
-# this command will be : flask user create bob bobpass
+#commands competition
+@app.cli.command("create-competition", help="Creates a competition")
+@click.argument("name")
+@click.argument("date")
+@click.argument("location")
+def create_competition_command(name, date, location):
+    try:
+        date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+        create_competition(name, date_obj, location)
+        print(f'Competition {name} created!')
+    except ValueError as e:
+        print(f"Error: {e}. Date format should be YYYY-MM-DD.")
 
-@user_cli.command("list", help="Lists users in the database")
-@click.argument("format", default="string")
-def list_user_command(format):
-    if format == 'string':
-        print(get_all_users())
-    else:
-        print(get_all_users_json())
+@app.cli.command("import-results", help="Imports competition results from a CSV file")
+@click.argument("file_path")
+def import_results_command(file_path):
+    import_results_from_file(file_path)
 
-app.cli.add_command(user_cli) # add the group to the cli
-
-'''
-Test Commands
-'''
-
-test = AppGroup('test', help='Testing commands') 
-
-@test.command("user", help="Run User tests")
-@click.argument("type", default="all")
-def user_tests_command(type):
-    if type == "unit":
-        sys.exit(pytest.main(["-k", "UserUnitTests"]))
-    elif type == "int":
-        sys.exit(pytest.main(["-k", "UserIntegrationTests"]))
-    else:
-        sys.exit(pytest.main(["-k", "App"]))
+@app.cli.command("list-competitions", help="Lists all competitions")
+def list_competitions_command():
+    competitions = get_all_competitions()
     
+    if not competitions:
+        print("There are no competitions.")
+    else:
+        for competition in competitions:
+            print(f"ID: {competition['id']}, Name: {competition['name']}, Date: {competition['date']}")
 
-app.cli.add_command(test)
+
+@app.cli.command("view-results", help="View results for a specific competition")
+@click.argument("competition_id", type=int)
+def view_results_command(competition_id):
+    results = get_results_by_competition(competition_id)
+    
+    if not results:
+        print(f"No results found for competition ID {competition_id}.")
+    else:
+        for result in results:
+            print(f"Student ID: {result.student_id}, Rank: {result.rank}, Score: {result.score}")
+
+
