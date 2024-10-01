@@ -1,4 +1,5 @@
 #Flask Commands
+```py
 <br>@app.cli.command("init", help="Creates and initializes the database")</br>
 <br>@app.cli.command("create-student", help="Creates a student")</br>
 <br>@app.cli.command("list-students", help="Lists all students")</br>
@@ -8,6 +9,7 @@
 <br>@app.cli.command("import-results", help="Imports competition results from a CSV file")</br>
 <br>@app.cli.command("list-competitions", help="Lists all competitions")</br>
 <br>@app.cli.command("view-results", help="View results for a specific competition")</br>
+```
 
 <br></br>
 <br></br>
