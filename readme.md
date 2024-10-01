@@ -1,17 +1,16 @@
 #Flask Commands
 ```py
-<br>@app.cli.command("init", help="Creates and initializes the database")</br>
-<br>@app.cli.command("create-student", help="Creates a student")</br>
-<br>@app.cli.command("list-students", help="Lists all students")</br>
-<br>@app.cli.command("create-admin", help="Creates an admin")</br>
-<br>@app.cli.command("list-admins", help="Lists all admins")</br>
-<br>@app.cli.command("create-competition", help="Creates a competition")</br>
-<br>@app.cli.command("import-results", help="Imports competition results from a CSV file")</br>
-<br>@app.cli.command("list-competitions", help="Lists all competitions")</br>
-<br>@app.cli.command("view-results", help="View results for a specific competition")</br>
+@app.cli.command("init", help="Creates and initializes the database")
+@app.cli.command("create-student", help="Creates a student")
+@app.cli.command("list-students", help="Lists all students")
+@app.cli.command("create-admin", help="Creates an admin")
+@app.cli.command("list-admins", help="Lists all admins")
+@app.cli.command("create-competition", help="Creates a competition")
+@app.cli.command("import-results", help="Imports competition results from a CSV file")
+@app.cli.command("list-competitions", help="Lists all competitions")
+@app.cli.command("view-results", help="View results for a specific competition")
 ```
 
-<br></br>
 <br></br>
 #What I used to test
 <br>flask init</br>
