@@ -9,6 +9,9 @@
 <br>@app.cli.command("list-competitions", help="Lists all competitions")</br>
 <br>@app.cli.command("view-results", help="View results for a specific competition")</br>
 
+<br></br>
+<br></br>
+<br></br>
 #What I used to test
 <br>flask init</br>
 <br>flask create-competition Hackathon 2024-10-05 online</br>
