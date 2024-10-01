@@ -11,7 +11,6 @@
 
 <br></br>
 <br></br>
-<br></br>
 #What I used to test
 <br>flask init</br>
 <br>flask create-competition Hackathon 2024-10-05 online</br>
